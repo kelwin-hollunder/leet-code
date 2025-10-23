@@ -1,52 +1,43 @@
-Add Two Numbers (Linked List Problem)
+# LeetCode Problem #02: Add Two Numbers Solution
 
-This challenge is based on one of the most popular algorithm problems from LeetCode (#2 – Add Two Numbers).
-The task is to add two non-negative integers represented as linked lists, where each node contains a single digit.
+## 💻 Problem Description
 
-The digits are stored in reverse order, meaning the 1’s digit is at the head of the list.
-The goal is to return the sum as a new linked list, also in reverse order.
+The problem asks us to add two **non-negative numbers** represented as **singly-linked lists**. The digits are stored in **reverse order**, and each node contains a single digit. We need to return the sum as a new linked list, also with digits in reverse order.
 
-Example:  
+For example:
+Input: $(2 \to 4 \to 3) + (5 \to 6 \to 4)$
+The numbers are $342 + 465 = 807$.
+Output: $(7 \to 0 \to 8)$
 
-Input:
-l1 = [2, 4, 3]
-l2 = [5, 6, 4]
+---
 
-Explanation:
-The numbers are 342 and 465.
-342 + 465 = 807
+## ✨ Solution Overview
 
-Output:
-[7, 0, 8]
+This solution uses an **iterative** approach, simulating the manual process of adding numbers column by column, from right to left, while managing a **carry-over** (or *exceed*) value.
 
-How It Works:
+### Key Concepts
 
-The function addTwoNumbers iterates through both linked lists, adding corresponding digits together along with any carry (overflow) from the previous addition.
+1.  **Iterative Addition:** We traverse both input lists ($l1$ and $l2$) simultaneously using a `while` loop. The loop continues as long as there are digits remaining in either list or a carry-over value (`exceed`) is present.
+2.  **Carry Management:** A variable, `exceed`, tracks the carry-over from the previous digit addition. This is initialized to $0$.
+3.  **New Linked List Construction:** A **dummy head** node (`pointerToOriginalNode`) is created to simplify the insertion of the first digit. The pointer (`node`) then moves along the newly constructed list.
 
-Steps:
+---
 
-Initialize pointers for both lists (l1, l2) and a dummy node (node) to build the result.
+## 🛠️ Implementation Details
 
-Loop while there are remaining nodes in either list or a carry (exceed):
+The core of the logic resides within the `while` loop:
 
-Add the current digits of both lists.
+1.  **Calculate Total:** In each iteration, the `total` sum for the current position is calculated by adding:
+    * The current `exceed` value.
+    * The digit from $l1$ (if $l1$ is not `null`).
+    * The digit from $l2$ (if $l2$ is not `null`).
+2.  **Update Input Pointers:** After adding the digits, the pointers $l1$ and $l2$ are advanced to their `.next` nodes.
+3.  **Determine New Exceed:** The new carry-over (`exceed`) is calculated as $\lfloor \frac{\text{total}}{10} \rfloor$ (the integer part of the division). This is the digit that will be carried to the next column.
+4.  **Create New Node:** A new `ListNode` is created with the digit $\text{total} \pmod{10}$ (the remainder of the division). This is the *current* position's digit in the sum.
+5.  **Append and Advance:** The new node is appended to the result list (`node.next = new ListNode(...)`), and the `node` pointer is moved to this new node (`node = node.next`) to prepare for the next iteration.
+6.  **Return Value:** The function returns `pointerToOriginalNode.next`, effectively skipping the dummy head node and returning the actual start of the sum list.
 
-Include any previous carry in the sum.
+### Time and Space Complexity
 
-Compute the new carry: exceed = Math.floor(total / 10)
-
-Store the remainder (total % 10) as a new node in the resulting list.
-
-Return the next node after the dummy, which represents the start of the result list.
-
-Example Walkthrough
-
-For l1 = [2, 4, 3] and l2 = [5, 6, 4]:
-
-Step | l1.val | l2.val | total | new digit | carry
-
-1 | 2 | 5 | 7 | 7 | 0
-2 | 4 | 6 | 10 | 0 | 1
-3 | 3 | 4 | 8 | 8 | 0
-
-Result: [7, 0, 8]
+* **Time Complexity:** $\mathcal{O}(\max(N, M))$, where $N$ and $M$ are the lengths of the two input linked lists. We iterate through both lists at most once.
+* **Space Complexity:** $\mathcal{O}(\max(N, M))$, as the length of the new linked list is at most $\max(N, M) + 1$ (in case of a final carry-over).
